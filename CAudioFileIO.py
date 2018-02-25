@@ -19,7 +19,7 @@ class CAudioFileIO(object):
 		return self.data
 
 	def setSampleRate(self, sampleRate):
-		self.sampleRate = sampleRate
+		self.sampleRate = float(sampleRate)
 
 	def getSampleRate(self):
 		return self.sampleRate
@@ -37,21 +37,19 @@ class CAudioFileIO(object):
 		fileName, fileExtension = splitext(filePath)
 		self.fileExtension = fileExtension
 
-		if self.fileType == '.wav':
+		if self.fileExtension == '.wav':
 			self.sampleRate, self.data = read(filePath)
 
-		elif self.fileType == '.aif':
+		elif self.fileExtension == '.aif':
 			file = aifc.open(filePath)
-			self.sampleRate = file.getframerate()
+			self.sampleRate = float(file.getframerate())
 			numFrames = file.getnframes()
 			self.data = file.readframes(numFrames)
 			file.close()
 
-		elif self.fileType == '.pcm':
+		elif self.fileExtension == '.pcm':
 			rawData = np.memmap(filePath, dtype='h', mode='r')
 			self.data = np.asarray(rawData)
 
 		else:
 			raise AttributeError("Invalid file type")
-
-
